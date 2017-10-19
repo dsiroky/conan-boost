@@ -13,6 +13,7 @@ class BoostConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     options = {"shared": [True, False]}
     default_options = "shared=False"
+    short_paths = True
 
     FOLDER_NAME = "boost_%s" % version.replace(".", "_")
 
