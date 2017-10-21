@@ -38,6 +38,16 @@ class BoostConan(ConanFile):
                 ]
         if self.settings.os == "Windows":
             flags += ["variant=debug,release", "runtime-link=shared,static"]
+        else:
+            flags += ["variant=release"]
+
+        if str(self.settings.compiler) == "clang":
+            flags.append("toolset=%s-%s" % (self.settings.compiler,
+                                            str(self.settings.compiler.version)))
+        elif str(self.settings.compiler) == "gcc":
+            flags.append("toolset=%s-%s" % (self.settings.compiler,
+                                            str(self.settings.compiler.version)[0]))
+
         flags += ["stage"]
 
         command = "cd %s && cd %s" % (self.source_folder, self.FOLDER_NAME)
@@ -45,7 +55,8 @@ class BoostConan(ConanFile):
             command += " && b2"
         else:
             command += " && ./b2"
-        self.run(command + " " + " ".join(flags))
+        command += " " + " ".join(flags)
+        self.run(command)
 
     def package(self):
         self.copy(pattern="*", dst="include/boost", src="%s/%s/boost" % (self.source_folder, self.FOLDER_NAME))
